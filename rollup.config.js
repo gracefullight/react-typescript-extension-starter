@@ -1,17 +1,17 @@
 import path from 'path';
 
-import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
-
 import {
   chromeExtension,
   simpleReloader,
 } from 'rollup-plugin-chrome-extension';
-import { terser } from 'rollup-plugin-terser';
 import { emptyDir } from 'rollup-plugin-empty-dir';
+import { terser } from 'rollup-plugin-terser';
 import zip from 'rollup-plugin-zip';
-import replace from '@rollup/plugin-replace';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -34,6 +34,7 @@ export default {
     simpleReloader(),
     resolve(),
     commonjs(),
+    json(),
     typescript(),
     terser({
       module: true,
