@@ -4,13 +4,12 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import typescript from '@rollup/plugin-typescript';
 import {
   chromeExtension,
   simpleReloader,
 } from 'rollup-plugin-chrome-extension';
 import { emptyDir } from 'rollup-plugin-empty-dir';
-import { terser } from 'rollup-plugin-terser';
+import { swc, defineRollupSwcOption } from 'rollup-plugin-swc3';
 import zip from 'rollup-plugin-zip';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -35,10 +34,21 @@ export default {
     resolve(),
     commonjs(),
     json(),
-    typescript(),
-    terser({
-      module: true,
-    }),
+    swc(
+      defineRollupSwcOption({
+        minify: true,
+        jsc: {
+          parser: {
+            syntax: 'typescript',
+            tsx: true,
+          },
+          target: 'es2018',
+        },
+        module: {
+          type: 'es6',
+        },
+      }),
+    ),
     // Empties the output dir before a new build
     emptyDir(),
     // Outputs a zip file in ./releases
